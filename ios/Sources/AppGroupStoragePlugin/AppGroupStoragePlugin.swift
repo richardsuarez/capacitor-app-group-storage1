@@ -61,11 +61,11 @@ private func containerURL(for groupId: String) throws -> URL {
             let fileURL = imagesDir.appendingPathComponent(filename)
 
             // Optional: ensure extension is image-ish
-            if let ext = fileURL.pathExtension.lowercased() as String?,
+            /* if let ext = fileURL.pathExtension.lowercased() as String?,
                !["png", "jpg", "jpeg", "heic", "webp"].contains(ext) {
                 call.reject("Unsupported file extension: .\(ext)")
                 return
-            }
+            } */
 
             // Atomic write to avoid partial files
             try data.write(to: fileURL, options: [.atomic])
@@ -88,9 +88,9 @@ private func containerURL(for groupId: String) throws -> URL {
 
             let items = try FileManager.default.contentsOfDirectory(at: imagesDir, includingPropertiesForKeys: [.contentModificationDateKey, .fileSizeKey], options: [.skipsHiddenFiles])
 
-            let allowed = Set(["png","jpg","jpeg","heic","webp"])
+            //let allowed = Set(["png","jpg","jpeg","heic","webp"])
             let files = try items
-                .filter { allowed.contains($0.pathExtension.lowercased()) }
+                //.filter { allowed.contains($0.pathExtension.lowercased()) }
                 .map { url -> [String: Any] in
                     let values = try url.resourceValues(forKeys: [.contentModificationDateKey, .fileSizeKey])
                     return [
@@ -140,7 +140,7 @@ private func containerURL(for groupId: String) throws -> URL {
 
             let tmpURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 .appendingPathComponent("shared-copy-\(UUID().uuidString)")
-                .appendingPathExtension((srcURL.pathExtension.isEmpty ? "jpg" : srcURL.pathExtension))
+                .appendingPathExtension((srcURL.pathExtension))
 
             try FileManager.default.copyItem(at: srcURL, to: tmpURL)
 
